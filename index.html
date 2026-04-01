@@ -37,24 +37,8 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
 .topbar-btns{display:flex;gap:8px}
 .btn-sm{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:6px 12px;font-family:'Share Tech Mono',monospace;font-size:11px;cursor:pointer;border-radius:3px;transition:all .2s}
 .btn-sm:hover{border-color:var(--neon);color:var(--neon)}
-.btn-sm.home{
-  border:2px solid var(--neon);
-  color:var(--neon);
-  background:rgba(0,212,255,0.10);
-  font-weight:bold;
-  letter-spacing:1px;
-  box-shadow:0 0 10px rgba(0,212,255,0.25),inset 0 0 8px rgba(0,212,255,0.08);
-  text-shadow:0 0 8px var(--neon);
-  font-size:12px;
-  padding:6px 16px;
-}
-.btn-sm.home:hover{
-  background:rgba(0,212,255,0.22);
-  box-shadow:0 0 22px rgba(0,212,255,0.55),inset 0 0 12px rgba(0,212,255,0.15);
-  border-color:var(--neon);
-  color:#fff;
-  text-shadow:0 0 14px var(--neon),0 0 28px var(--neon);
-}
+.btn-sm.home{border:2px solid var(--neon);color:var(--neon);background:rgba(0,212,255,0.10);font-weight:bold;letter-spacing:1px;box-shadow:0 0 10px rgba(0,212,255,0.25),inset 0 0 8px rgba(0,212,255,0.08);text-shadow:0 0 8px var(--neon);font-size:12px;padding:6px 16px;}
+.btn-sm.home:hover{background:rgba(0,212,255,0.22);box-shadow:0 0 22px rgba(0,212,255,0.55),inset 0 0 12px rgba(0,212,255,0.15);border-color:var(--neon);color:#fff;text-shadow:0 0 14px var(--neon),0 0 28px var(--neon);}
 .statsbar{background:var(--bg2);border-bottom:1px solid var(--border2);padding:8px 20px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
 .stat-item{display:flex;align-items:center;gap:6px;font-size:11px}
 .stat-dot{width:10px;height:10px;border-radius:50%}
@@ -100,23 +84,208 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
 .leg-dot.amber{background:var(--amber)}
 .leg-dot.red{background:var(--red)}
 .leg-dot.gray{background:#334455}
-.board-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+
+/* ══════════════════════════════════════════
+   CÉLULAS DO TABULEIRO
+   ══════════════════════════════════════════ */
+.board-grid{
+  display:grid;
+  grid-template-columns:repeat(10,1fr);
+  gap:5px;
+}
 @media(max-width:600px){.board-grid{grid-template-columns:repeat(8,1fr)}}
 @media(max-width:380px){.board-grid{grid-template-columns:repeat(5,1fr)}}
-.cell{aspect-ratio:1;background:var(--bg3);border:1px solid var(--border);border-radius:4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:clamp(8px,1.5vw,11px);color:var(--text3);transition:all .2s;position:relative;overflow:hidden;font-family:'Share Tech Mono',monospace}
-.cell::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(0,212,255,0.05),transparent);opacity:0}
-.cell:hover:not(.revealed){border-color:var(--neon);color:var(--neon);box-shadow:0 0 10px rgba(0,212,255,0.3);transform:scale(1.05)}
-.cell:hover:not(.revealed)::before{opacity:1}
-.cell.revealed{cursor:default;transform:none!important}
-.cell-num{font-size:clamp(7px,1.2vw,10px);opacity:.5}
-.cell-icon{font-size:clamp(12px,2vw,18px);line-height:1}
-.cell.te{background:rgba(170,68,255,0.15);border-color:var(--purple);box-shadow:0 0 8px rgba(170,68,255,0.3)}
-.cell.ts{background:rgba(0,170,68,0.15);border-color:var(--green);box-shadow:0 0 8px rgba(0,170,68,0.3)}
-.cell.tv{background:rgba(255,170,0,0.15);border-color:var(--amber);box-shadow:0 0 8px rgba(255,170,0,0.3)}
-.cell.tb{background:rgba(255,51,102,0.15);border-color:var(--red);box-shadow:0 0 8px rgba(255,51,102,0.3);animation:pulse-red 1.5s infinite}
-@keyframes pulse-red{0%,100%{box-shadow:0 0 8px rgba(255,51,102,0.3)}50%{box-shadow:0 0 20px rgba(255,51,102,0.7)}}
+
+/* CÉLULA BASE — não revelada */
+.cell{
+  aspect-ratio:1;
+  background:linear-gradient(145deg,#0d1f30,#0a1520);
+  border:1px solid #1e4a6e;
+  border-radius:6px;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  color:#3a8ab0;
+  transition:all .2s ease;
+  position:relative;
+  overflow:hidden;
+  font-family:'Share Tech Mono',monospace;
+  box-shadow:inset 0 1px 0 rgba(0,212,255,0.1), 0 0 6px rgba(0,212,255,0.1);
+}
+
+/* Corner accent — top-left */
+.cell::before{
+  content:'';
+  position:absolute;
+  top:3px;
+  left:3px;
+  width:8px;
+  height:8px;
+  border-top:1px solid rgba(0,212,255,0.4);
+  border-left:1px solid rgba(0,212,255,0.4);
+  border-radius:1px;
+  pointer-events:none;
+  transition:border-color .2s, opacity .2s;
+  opacity:.7;
+}
+
+/* Corner accent — bottom-right */
+.cell::after{
+  content:'';
+  position:absolute;
+  bottom:3px;
+  right:3px;
+  width:8px;
+  height:8px;
+  border-bottom:1px solid rgba(0,212,255,0.4);
+  border-right:1px solid rgba(0,212,255,0.4);
+  border-radius:1px;
+  pointer-events:none;
+  transition:border-color .2s, opacity .2s;
+  opacity:.7;
+}
+
+/* ── NÚMERO DA CÉLULA NÃO REVELADA — MUITO GRANDE E DOMINANTE ── */
+.cell-num{
+  font-size:clamp(18px, 3.2vw, 36px);
+  font-weight:900;
+  letter-spacing:-1px;
+  opacity:0.85;
+  line-height:1;
+  transition:color .2s, font-size .2s, opacity .2s;
+}
+
+/* ── ÍCONE NAS CÉLULAS REVELADAS ── */
+.cell-icon{
+  font-size:clamp(18px, 2.8vw, 26px);
+  line-height:1.1;
+}
+
+/* ── HOVER — célula não revelada ── */
+.cell:hover:not(.revealed){
+  background:linear-gradient(145deg,#0f2a40,rgba(0,212,255,0.12));
+  border-color:var(--neon);
+  color:var(--neon);
+  box-shadow:0 0 20px rgba(0,212,255,0.6), inset 0 0 15px rgba(0,212,255,0.1);
+  transform:scale(1.08);
+  z-index:5;
+}
+.cell:hover:not(.revealed) .cell-num{
+  color:var(--neon);
+  font-size:clamp(20px, 3.5vw, 38px);
+  opacity:1;
+}
+.cell:hover:not(.revealed)::before,
+.cell:hover:not(.revealed)::after{
+  border-color:var(--neon);
+  opacity:1;
+}
+
+/* Célula revelada — base */
+.cell.revealed{
+  cursor:default;
+  transform:none !important;
+}
+.cell.revealed::before,
+.cell.revealed::after{
+  display:none;
+}
+
+/* ── NÚMERO NAS CÉLULAS REVELADAS — visível mas menor que o ícone ── */
+.cell.revealed .cell-num{
+  font-size:clamp(11px, 1.8vw, 18px);
+  font-weight:900;
+  opacity:1;
+  letter-spacing:0px;
+}
+
+/* ── EQUIPMENT / BRINDE GAV — ROXO VIBRANTE ── */
+.cell.te{
+  background:linear-gradient(145deg,#2d1060,#4a1a8a);
+  border:2px solid #bb55ff;
+  box-shadow:0 0 18px rgba(170,68,255,0.7), inset 0 0 20px rgba(170,68,255,0.2);
+  animation:cell-reveal .4s ease;
+}
+.cell.te .cell-num{
+  color:#cc88ff;
+  font-size:clamp(11px, 1.8vw, 18px);
+  font-weight:900;
+  opacity:1;
+}
+.cell.te .cell-icon{filter:drop-shadow(0 0 6px rgba(170,68,255,0.9))}
+
+/* ── SNACK / DRINK — VERDE NEON VIBRANTE ── */
+.cell.ts{
+  background:linear-gradient(145deg,#063020,#0a4828);
+  border:2px solid #00dd55;
+  box-shadow:0 0 18px rgba(0,220,85,0.65), inset 0 0 20px rgba(0,220,85,0.15);
+  animation:cell-reveal .4s ease;
+}
+.cell.ts .cell-num{
+  color:#00ff77;
+  font-size:clamp(11px, 1.8vw, 18px);
+  font-weight:900;
+  opacity:1;
+}
+.cell.ts .cell-icon{filter:drop-shadow(0 0 6px rgba(0,220,85,0.9))}
+
+/* ── VANTAGEM — DOURADO VIBRANTE ── */
+.cell.tv{
+  background:linear-gradient(145deg,#3a2000,#5c3500);
+  border:2px solid #ffcc00;
+  box-shadow:0 0 18px rgba(255,200,0,0.65), inset 0 0 20px rgba(255,200,0,0.15);
+  animation:cell-reveal .4s ease;
+}
+.cell.tv .cell-num{
+  color:#ffdd44;
+  font-size:clamp(11px, 1.8vw, 18px);
+  font-weight:900;
+  opacity:1;
+}
+.cell.tv .cell-icon{filter:drop-shadow(0 0 6px rgba(255,200,0,0.9))}
+
+/* ── BOMBA — VERMELHO PULSANTE INTENSO ── */
+.cell.tb{
+  background:linear-gradient(145deg,#3a0015,#5c0025);
+  border:2px solid #ff3366;
+  box-shadow:0 0 22px rgba(255,51,102,0.75), inset 0 0 20px rgba(255,51,102,0.2);
+  animation:cell-reveal .4s ease, pulse-red 1.4s infinite;
+}
+.cell.tb .cell-num{
+  color:#ff6688;
+  font-size:clamp(11px, 1.8vw, 18px);
+  font-weight:900;
+  opacity:1;
+}
+.cell.tb .cell-icon{filter:drop-shadow(0 0 8px rgba(255,51,102,1))}
+
+/* ── KEYFRAMES ── */
+@keyframes pulse-red{
+  0%,100%{box-shadow:0 0 12px rgba(255,51,102,0.6), inset 0 0 12px rgba(255,51,102,0.15)}
+  50%{box-shadow:0 0 35px rgba(255,51,102,0.95), 0 0 60px rgba(255,51,102,0.4), inset 0 0 22px rgba(255,51,102,0.25)}
+}
+@keyframes cell-reveal{
+  0%{transform:scale(0);opacity:0}
+  60%{transform:scale(1.08);opacity:1}
+  100%{transform:scale(1);opacity:1}
+}
 @keyframes shake{0%{transform:translate(0,0)}25%{transform:translate(-6px,4px)}50%{transform:translate(6px,-4px)}75%{transform:translate(-4px,6px)}100%{transform:translate(0,0)}}
 .shake{animation:shake .4s ease}
+
+/* ── FLASH CELL (ADM click) ── */
+@keyframes cell-flash{
+  0%{box-shadow:0 0 8px rgba(0,212,255,0.3);border-color:var(--border)}
+  25%{box-shadow:0 0 38px rgba(0,212,255,1),0 0 70px rgba(0,212,255,0.6);border-color:var(--neon);transform:scale(1.12)}
+  50%{box-shadow:0 0 14px rgba(0,212,255,0.5);border-color:var(--neon2);transform:scale(1.02)}
+  75%{box-shadow:0 0 38px rgba(0,212,255,1),0 0 70px rgba(0,212,255,0.6);border-color:var(--neon);transform:scale(1.12)}
+  100%{box-shadow:0 0 8px rgba(0,212,255,0.3);border-color:var(--border);transform:scale(1)}
+}
+.cell-flash-anim{animation:cell-flash 1s ease!important;z-index:10;position:relative}
+
+/* ═══════════════════════════════════════════ */
+
 .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:8000;backdrop-filter:blur(4px)}
 .modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:28px;width:min(420px,92vw);position:relative;box-shadow:0 0 40px rgba(0,212,255,0.2)}
 .modal-box.bomb{border-color:var(--red);box-shadow:0 0 40px rgba(255,51,102,0.4)}
@@ -160,7 +329,6 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:var(--bg2)}
 ::-webkit-scrollbar-thumb{background:var(--neon3);border-radius:2px}
-/* BRINDE VIEWER */
 .brinde-filter-btns{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
 .bfbtn{background:var(--bg3);border:1px solid var(--border);color:var(--text3);padding:3px 7px;font-size:9px;cursor:pointer;border-radius:2px;font-family:'Share Tech Mono',monospace;transition:all .2s}
 .bfbtn:hover{border-color:var(--text2);color:var(--text2)}
@@ -189,40 +357,8 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
 .brinde-badge.hidden{border-color:var(--border);color:var(--text3)}
 .brinde-counter{font-size:9px;color:var(--text3);margin-bottom:6px;letter-spacing:1px}
 .brinde-section-label{font-size:9px;color:var(--text3);letter-spacing:1px;margin-bottom:6px;padding-top:2px}
-@keyframes cell-flash{
-  0%{box-shadow:0 0 8px rgba(0,212,255,0.3);border-color:var(--border)}
-  25%{box-shadow:0 0 32px rgba(0,212,255,1),0 0 60px rgba(0,212,255,0.6);border-color:var(--neon);transform:scale(1.1)}
-  50%{box-shadow:0 0 12px rgba(0,212,255,0.5);border-color:var(--neon2);transform:scale(1.02)}
-  75%{box-shadow:0 0 32px rgba(0,212,255,1),0 0 60px rgba(0,212,255,0.6);border-color:var(--neon);transform:scale(1.1)}
-  100%{box-shadow:0 0 8px rgba(0,212,255,0.3);border-color:var(--border);transform:scale(1)}
-}
-.cell-flash-anim{animation:cell-flash 1s ease!important;z-index:10;position:relative}
-/* NOVO SORTEIO BTN (login screen) */
-.btn-novo-sorteio{
-  position:absolute;
-  bottom:20px;
-  right:20px;
-  background:var(--bg3);
-  border:1px solid var(--border);
-  color:var(--text3);
-  padding:8px 14px;
-  font-family:'Share Tech Mono',monospace;
-  font-size:10px;
-  cursor:pointer;
-  border-radius:4px;
-  transition:all .3s;
-  letter-spacing:1px;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  z-index:10;
-}
-.btn-novo-sorteio:hover{
-  border-color:var(--neon2);
-  color:var(--neon);
-  background:rgba(0,212,255,0.07);
-  box-shadow:0 0 10px rgba(0,212,255,0.2);
-}
+.btn-novo-sorteio{position:absolute;bottom:20px;right:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text3);padding:8px 14px;font-family:'Share Tech Mono',monospace;font-size:10px;cursor:pointer;border-radius:4px;transition:all .3s;letter-spacing:1px;display:flex;align-items:center;gap:6px;z-index:10;}
+.btn-novo-sorteio:hover{border-color:var(--neon2);color:var(--neon);background:rgba(0,212,255,0.07);box-shadow:0 0 10px rgba(0,212,255,0.2);}
 </style>
 </head>
 <body>
@@ -239,7 +375,6 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
     <button class="btn-primary" onclick="doLogin()">🚀 INICIAR MISSÃO</button>
     <button class="btn-adm-link" onclick="openAdmLogin()">[ ACESSO ADMINISTRATIVO ]</button>
   </div>
-  <!-- BOTÃO NOVO SORTEIO NA TELA INICIAL -->
   <button class="btn-novo-sorteio" onclick="loginNovoSorteio()" title="Reembaralhar todos os prêmios e começar do zero">
     🔄 NOVO SORTEIO
   </button>
@@ -253,7 +388,6 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
       <div class="topbar-op">OPERADOR: <span id="opName">—</span> | EQUIPE: <span id="opTeam">—</span></div>
     </div>
     <div class="topbar-btns">
-      <!-- BOTÃO INÍCIO — PRIMEIRO DA TOPBAR -->
       <button class="btn-sm home" onclick="doLogout()" title="Voltar ao início / Novo sorteio">🏠 INÍCIO</button>
       <button class="btn-sm" onclick="togglePanel('hist')">📋 HISTÓRICO</button>
       <button class="btn-sm" onclick="openAdmLogin()">🔐 ADM</button>
@@ -268,7 +402,6 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
     <div class="stat-item"><div class="stat-dot gray"></div>Restantes: <span class="stat-val" id="stRe">80</span></div>
   </div>
   <div class="main-area">
-    <!-- ADM PANEL LEFT -->
     <div class="side-panel" id="admPanel">
       <div class="panel-header">
         <div class="panel-title">🔐 PAINEL ADM</div>
@@ -281,11 +414,7 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
         <div class="panel-stat"><span>Vantagens</span><span class="panel-stat-val" id="admVa">0</span></div>
         <div class="panel-stat"><span>Bombas</span><span class="panel-stat-val" id="admBo">0</span></div>
         <br>
-
-        <!-- BOTÃO VER BRINDES -->
         <button class="panel-btn" id="btnVerBrindes" onclick="toggleBrindesView()">👁️ VER TODOS OS BRINDES</button>
-
-        <!-- CONTAINER DOS BRINDES -->
         <div id="brindesContainer" style="display:none;margin-bottom:10px">
           <div class="brinde-section-label">👁️ VISUALIZAR BRINDES</div>
           <div class="brinde-filter-btns" id="brindeFilters">
@@ -299,7 +428,6 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
           <div class="brinde-counter" id="brindeCounter">Exibindo 80 de 80 itens</div>
           <div class="brinde-list" id="brindeList"></div>
         </div>
-
         <div style="border-top:1px solid var(--border);margin-bottom:8px;padding-top:10px">
           <div style="font-size:9px;color:var(--text3);letter-spacing:1px;margin-bottom:8px">⚙️ AÇÕES ADMINISTRATIVAS:</div>
           <button class="panel-btn" onclick="exportCSV()">📥 EXPORTAR CSV</button>
@@ -315,7 +443,6 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
       </div>
     </div>
 
-    <!-- BOARD AREA -->
     <div class="board-area">
       <div class="board-title">🗺️ MAPA DE OPERAÇÕES</div>
       <div class="board-subtitle">// SELECIONE UMA CÉLULA PARA REVELAR SEU DESTINO //</div>
@@ -330,7 +457,6 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
       <div class="board-grid" id="boardGrid"></div>
     </div>
 
-    <!-- HIST PANEL RIGHT -->
     <div class="side-panel right" id="histPanel">
       <div class="panel-header">
         <div class="panel-title">📋 HISTÓRICO</div>
@@ -409,11 +535,9 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
   </div>
 </div>
 
-<!-- TOAST -->
 <div id="toastMsg"></div>
 
 <script>
-// ─── AUDIO ───────────────────────────────────────────────────────────────────
 let AC;
 function getAC(){if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();return AC;}
 function beep(freq,dur=0.15,type='square'){try{const ac=getAC();const o=ac.createOscillator();const g=ac.createGain();o.connect(g);g.connect(ac.destination);o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(0.3,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+dur);o.start();o.stop(ac.currentTime+dur);}catch(e){}}
@@ -421,7 +545,6 @@ function playReveal(){try{const ac=getAC();const o=ac.createOscillator();const g
 function playWin(){const notes=[523,659,784,1047];notes.forEach((f,i)=>setTimeout(()=>beep(f,0.2,'sine'),i*80));}
 function playBomb(){try{const ac=getAC();const buf=ac.createBuffer(1,ac.sampleRate*0.5,ac.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1);const src=ac.createBufferSource();src.buffer=buf;const g=ac.createGain();g.gain.setValueAtTime(0.4,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.5);src.connect(g);g.connect(ac.destination);src.start();}catch(e){}}
 
-// ─── CANVAS FX ───────────────────────────────────────────────────────────────
 const fxC=document.getElementById('fxCanvas');
 const fxCtx=fxC.getContext('2d');
 let particles=[];
@@ -433,7 +556,6 @@ function fxLoop(){fxCtx.clearRect(0,0,fxC.width,fxC.height);particles=particles.
 fxLoop();
 function screenShake(){const gs=document.getElementById('gameScreen');gs.classList.add('shake');setTimeout(()=>gs.classList.remove('shake'),400);}
 
-// ─── RADAR ───────────────────────────────────────────────────────────────────
 const rC=document.getElementById('radarCanvas');
 const rCtx=rC.getContext('2d');
 let rAngle=0;
@@ -441,7 +563,6 @@ const rDots=Array.from({length:6},()=>({a:Math.random()*Math.PI*2,r:Math.random(
 function radarLoop(){rCtx.clearRect(0,0,180,180);const cx=90,cy=90,R=80;rCtx.strokeStyle='rgba(0,212,255,0.2)';rCtx.lineWidth=1;[20,40,60,80].forEach(r=>{rCtx.beginPath();rCtx.arc(cx,cy,r,0,Math.PI*2);rCtx.stroke();});rCtx.beginPath();rCtx.moveTo(cx-R,cy);rCtx.lineTo(cx+R,cy);rCtx.stroke();rCtx.beginPath();rCtx.moveTo(cx,cy-R);rCtx.lineTo(cx,cy+R);rCtx.stroke();rCtx.save();rCtx.translate(cx,cy);for(let i=0;i<60;i++){const a=rAngle-i*0.05;rCtx.beginPath();rCtx.moveTo(0,0);rCtx.arc(0,0,R,a,a+0.08);rCtx.lineTo(0,0);rCtx.fillStyle=`rgba(0,212,255,${(60-i)/60*0.3})`;rCtx.fill();}rCtx.restore();rCtx.save();rCtx.translate(cx,cy);rCtx.beginPath();rCtx.moveTo(0,0);rCtx.lineTo(Math.cos(rAngle)*R,Math.sin(rAngle)*R);rCtx.strokeStyle='rgba(0,212,255,0.9)';rCtx.lineWidth=2;rCtx.stroke();rCtx.restore();rDots.forEach(d=>{if(Math.abs(((rAngle-d.a)%(Math.PI*2)+Math.PI*2)%(Math.PI*2))<0.15)d.life=1;if(d.life>0){const dx=cx+Math.cos(d.a)*d.r,dy=cy+Math.sin(d.a)*d.r;rCtx.beginPath();rCtx.arc(dx,dy,3,0,Math.PI*2);rCtx.fillStyle=`rgba(0,255,136,${d.life})`;rCtx.fill();d.life-=0.02;}});rAngle+=0.03;requestAnimationFrame(radarLoop);}
 radarLoop();
 
-// ─── PRIZES ──────────────────────────────────────────────────────────────────
 const PRIZES=[
   {n:"🧴 Garrafinha Térmica GAV",d:"Garrafa térmica oficial da GAV — mantém sua bebida gelada ou quente por horas!",i:"🧴",type:"equipment",qty:3},
   {n:"🛍️ Bolsa Térmica GAV",d:"Bolsa térmica oficial da GAV — perfeita para o dia a dia!",i:"🛍️",type:"equipment",qty:2},
@@ -465,7 +586,6 @@ const CFG={
   bomba:{title:'💣 PRENDA ATIVADA!',color:'#ff3366',cat:'⚠️ PRENDA / DESAFIO SURPRESA'}
 };
 
-// ─── STATE ───────────────────────────────────────────────────────────────────
 const SK='ocmg_v3';
 let S={board:[],revealed:{},history:[],players:{},init:false};
 let currentUser=null;
@@ -486,21 +606,16 @@ function genBoard(){
 loadS();
 if(!S.init)genBoard();
 
-// ─── TOAST ───────────────────────────────────────────────────────────────────
 function showToast(msg){
   const t=document.getElementById('toastMsg');
-  t.textContent=msg;
-  t.style.opacity='1';
+  t.textContent=msg;t.style.opacity='1';
   clearTimeout(t._to);
   t._to=setTimeout(()=>{t.style.opacity='0';},2800);
 }
 
-// ─── CONFIRM MODAL ───────────────────────────────────────────────────────────
 let confirmCallback=null;
 function openConfirm(title,msg,cb){
-  const titleEl=document.getElementById('confirmTitle');
-  titleEl.textContent=title;
-  titleEl.style.color='var(--red)';
+  document.getElementById('confirmTitle').textContent=title;
   document.getElementById('confirmMsg').textContent=msg;
   confirmCallback=cb;
   document.getElementById('moConfirm').style.display='flex';
@@ -510,12 +625,9 @@ function closeConfirm(){
   confirmCallback=null;
 }
 document.getElementById('confirmOkBtn').addEventListener('click',()=>{
-  const cb=confirmCallback;
-  closeConfirm();
-  if(cb)cb();
+  const cb=confirmCallback;closeConfirm();if(cb)cb();
 });
 
-// ─── LOGIN ───────────────────────────────────────────────────────────────────
 function doLogin(){
   const name=document.getElementById('loginName').value.trim();
   const team=document.getElementById('loginTeam').value.trim();
@@ -536,22 +648,15 @@ function doLogout(){
   closePanel('adm');closePanel('hist');
 }
 
-// ─── NOVO SORTEIO NA LOGIN ────────────────────────────────────────────────────
 function loginNovoSorteio(){
-  openConfirm(
-    '🔄 NOVO SORTEIO',
-    'Deseja iniciar um NOVO SORTEIO? Isso vai reembaralhar todos os prêmios, apagar o histórico e reiniciar o jogo do zero.',
-    ()=>{
-      genBoard();
-      showToast('✅ Novo sorteio iniciado! Prêmios reembaralhados.');
-    }
-  );
+  openConfirm('🔄 NOVO SORTEIO','Deseja iniciar um NOVO SORTEIO? Isso vai reembaralhar todos os prêmios, apagar o histórico e reiniciar o jogo do zero.',()=>{
+    genBoard();showToast('✅ Novo sorteio iniciado! Prêmios reembaralhados.');
+  });
 }
 
 document.getElementById('loginName').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginTeam').focus();});
 document.getElementById('loginTeam').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 
-// ─── BOARD ───────────────────────────────────────────────────────────────────
 function renderBoard(){
   const grid=document.getElementById('boardGrid');
   grid.innerHTML='';
@@ -624,7 +729,6 @@ function updateCellUI(idx,prize){
   const tc={equipment:'te',snack:'ts',vantagem:'tv',bomba:'tb'}[prize.type]||'';
   cell.className='cell revealed '+tc;
   cell.innerHTML=`<span class="cell-icon">${prize.i}</span><span class="cell-num">#${idx+1}</span>`;
-  cell.style.animation='none';void cell.offsetWidth;cell.style.animation='';
 }
 
 function showPrize(prize){
@@ -644,7 +748,6 @@ function showPrize(prize){
 
 function closePrize(){document.getElementById('moPrize').style.display='none';}
 
-// ─── STATS ───────────────────────────────────────────────────────────────────
 function updateStats(){
   let eq=0,sn=0,va=0,bo=0;
   Object.values(S.revealed).forEach(p=>{
@@ -662,34 +765,23 @@ function updateStats(){
   document.getElementById('progBar').style.width=(total/80*100)+'%';
 }
 
-// ─── BRINDE VIEWER ────────────────────────────────────────────────────────────
 function toggleBrindesView(){
   brindesOpen=!brindesOpen;
   const container=document.getElementById('brindesContainer');
   const btn=document.getElementById('btnVerBrindes');
-  if(brindesOpen){
-    container.style.display='block';
-    btn.textContent='🙈 OCULTAR BRINDES';
-    renderBrindeList();
-  }else{
-    container.style.display='none';
-    btn.textContent='👁️ VER TODOS OS BRINDES';
-  }
+  if(brindesOpen){container.style.display='block';btn.textContent='🙈 OCULTAR BRINDES';renderBrindeList();}
+  else{container.style.display='none';btn.textContent='👁️ VER TODOS OS BRINDES';}
 }
 
 function setBrindeFilter(filter,el){
   brindeFilter=filter;
   document.querySelectorAll('#brindeFilters .bfbtn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  renderBrindeList();
+  el.classList.add('active');renderBrindeList();
 }
 
 function getRevealedByIdx(){
   const map={};
-  S.history.forEach(h=>{
-    const idx=h.cell-1;
-    if(!map[idx])map[idx]=h;
-  });
+  S.history.forEach(h=>{const idx=h.cell-1;if(!map[idx])map[idx]=h;});
   return map;
 }
 
@@ -698,22 +790,11 @@ function renderBrindeList(){
   const counter=document.getElementById('brindeCounter');
   if(!list||!counter)return;
   const revMap=getRevealedByIdx();
-
   let items=S.board.map((prize,idx)=>({prize,idx,isRevealed:!!S.revealed[idx],revEntry:revMap[idx]||null}));
-
-  if(brindeFilter==='hidden'){
-    items=items.filter(it=>!it.isRevealed);
-  }else if(brindeFilter!=='all'){
-    items=items.filter(it=>it.prize.type===brindeFilter);
-  }
-
+  if(brindeFilter==='hidden'){items=items.filter(it=>!it.isRevealed);}
+  else if(brindeFilter!=='all'){items=items.filter(it=>it.prize.type===brindeFilter);}
   counter.textContent='Exibindo '+items.length+' de 80 itens';
-
-  if(items.length===0){
-    list.innerHTML='<div style="padding:14px;text-align:center;color:var(--text3);font-size:10px">Nenhum item encontrado.</div>';
-    return;
-  }
-
+  if(items.length===0){list.innerHTML='<div style="padding:14px;text-align:center;color:var(--text3);font-size:10px">Nenhum item encontrado.</div>';return;}
   list.innerHTML=items.map(it=>{
     const revClass=it.isRevealed?'rev-'+it.prize.type:'';
     const badgeClass=it.isRevealed?'revealed-'+it.prize.type:'hidden';
@@ -731,83 +812,45 @@ function renderBrindeList(){
   }).join('');
 }
 
-function escHtml(str){
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+function escHtml(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 function flashCell(idx){
-  const cell=document.getElementById('cell'+idx);
-  if(!cell)return;
+  const cell=document.getElementById('cell'+idx);if(!cell)return;
   cell.scrollIntoView({behavior:'smooth',block:'center'});
-  cell.classList.remove('cell-flash-anim');
-  void cell.offsetWidth;
+  cell.classList.remove('cell-flash-anim');void cell.offsetWidth;
   cell.classList.add('cell-flash-anim');
-  setTimeout(()=>{
-    cell.classList.remove('cell-flash-anim');
-  },1100);
+  setTimeout(()=>{cell.classList.remove('cell-flash-anim');},1100);
 }
 
-// ─── PANELS ──────────────────────────────────────────────────────────────────
 function togglePanel(which){
-  if(which==='hist'){
-    const p=document.getElementById('histPanel');
-    p.classList.toggle('open');
-    if(p.classList.contains('open'))updateHistPanel();
-  }else if(which==='adm'){
-    const p=document.getElementById('admPanel');
-    p.classList.toggle('open');
-    if(p.classList.contains('open'))updateAdmPanel();
-  }
+  if(which==='hist'){const p=document.getElementById('histPanel');p.classList.toggle('open');if(p.classList.contains('open'))updateHistPanel();}
+  else if(which==='adm'){const p=document.getElementById('admPanel');p.classList.toggle('open');if(p.classList.contains('open'))updateAdmPanel();}
 }
 function closePanel(which){
-  if(which==='hist'){
-    document.getElementById('histPanel').classList.remove('open');
-  }else if(which==='adm'){
-    document.getElementById('admPanel').classList.remove('open');
-    admUnlocked=false;
-    brindesOpen=false;
-    const container=document.getElementById('brindesContainer');
-    if(container)container.style.display='none';
-    const btn=document.getElementById('btnVerBrindes');
-    if(btn)btn.textContent='👁️ VER TODOS OS BRINDES';
+  if(which==='hist'){document.getElementById('histPanel').classList.remove('open');}
+  else if(which==='adm'){
+    document.getElementById('admPanel').classList.remove('open');admUnlocked=false;brindesOpen=false;
+    const container=document.getElementById('brindesContainer');if(container)container.style.display='none';
+    const btn=document.getElementById('btnVerBrindes');if(btn)btn.textContent='👁️ VER TODOS OS BRINDES';
   }
 }
 function updateHistPanel(){
   const list=document.getElementById('histList');if(!list)return;
-  list.innerHTML=S.history.map(h=>`
-    <div class="hist-item">
-      <div class="hist-cell">CÉLULA #${h.cell}</div>
-      <div class="hist-name">${escHtml(h.name)} — ${escHtml(h.team)}</div>
-      <div class="hist-prize">${escHtml(h.prize)}</div>
-      <div class="hist-time">${h.ts} | Núcleo: ${h.nucleo||'—'}</div>
-    </div>`).join('')||'<div style="color:var(--text3);font-size:11px">Nenhuma jogada ainda.</div>';
+  list.innerHTML=S.history.map(h=>`<div class="hist-item"><div class="hist-cell">CÉLULA #${h.cell}</div><div class="hist-name">${escHtml(h.name)} — ${escHtml(h.team)}</div><div class="hist-prize">${escHtml(h.prize)}</div><div class="hist-time">${h.ts} | Núcleo: ${h.nucleo||'—'}</div></div>`).join('')||'<div style="color:var(--text3);font-size:11px">Nenhuma jogada ainda.</div>';
 }
 function updateAdmPanel(){
   let eq=0,sn=0,va=0,bo=0;
-  S.history.forEach(h=>{
-    if(h.type==='equipment')eq++;
-    else if(h.type==='snack')sn++;
-    else if(h.type==='vantagem')va++;
-    else if(h.type==='bomba')bo++;
-  });
+  S.history.forEach(h=>{if(h.type==='equipment')eq++;else if(h.type==='snack')sn++;else if(h.type==='vantagem')va++;else if(h.type==='bomba')bo++;});
   document.getElementById('admTotal').textContent=S.history.length;
-  document.getElementById('admEq').textContent=eq;
-  document.getElementById('admSn').textContent=sn;
-  document.getElementById('admVa').textContent=va;
-  document.getElementById('admBo').textContent=bo;
+  document.getElementById('admEq').textContent=eq;document.getElementById('admSn').textContent=sn;
+  document.getElementById('admVa').textContent=va;document.getElementById('admBo').textContent=bo;
   const pl=document.getElementById('admPartList');
-  if(pl)pl.innerHTML=S.history.map(h=>`
-    <div class="part-item">
-      <div class="part-name">${escHtml(h.name)}</div>
-      <div class="part-team">${escHtml(h.team)} | ${h.ts}</div>
-    </div>`).join('')||'<div style="color:var(--text3);font-size:10px">Sem participantes.</div>';
+  if(pl)pl.innerHTML=S.history.map(h=>`<div class="part-item"><div class="part-name">${escHtml(h.name)}</div><div class="part-team">${escHtml(h.team)} | ${h.ts}</div></div>`).join('')||'<div style="color:var(--text3);font-size:10px">Sem participantes.</div>';
   if(brindesOpen)renderBrindeList();
 }
 
-// ─── ADM LOGIN ────────────────────────────────────────────────────────────────
 function openAdmLogin(){
-  document.getElementById('admPwd').value='';
-  document.getElementById('admErr').textContent='';
+  document.getElementById('admPwd').value='';document.getElementById('admErr').textContent='';
   document.getElementById('moAdmLogin').style.display='flex';
   setTimeout(()=>document.getElementById('admPwd').focus(),100);
 }
@@ -815,62 +858,41 @@ function closeAdmLogin(){document.getElementById('moAdmLogin').style.display='no
 function checkAdmPwd(){
   const pwd=document.getElementById('admPwd').value;
   if(pwd==='GAV2025'){
-    admUnlocked=true;
-    document.getElementById('moAdmLogin').style.display='none';
-    document.getElementById('admPanel').classList.add('open');
-    updateAdmPanel();
-  }else{
-    document.getElementById('admErr').textContent='❌ Senha incorreta!';
-  }
+    admUnlocked=true;document.getElementById('moAdmLogin').style.display='none';
+    document.getElementById('admPanel').classList.add('open');updateAdmPanel();
+  }else{document.getElementById('admErr').textContent='❌ Senha incorreta!';}
 }
 document.getElementById('admPwd').addEventListener('keydown',e=>{if(e.key==='Enter')checkAdmPwd();});
 
-// ─── EXPORT CSV ───────────────────────────────────────────────────────────────
 function exportCSV(){
   const rows=[['Célula','Nome','Equipe','Prêmio','Tipo','Núcleo','Horário']];
   S.history.forEach(h=>rows.push([h.cell,h.name,h.team,h.prize,h.type,h.nucleo||'',h.ts]));
   const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
   const a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
-  a.download='ocmg_historico.csv';
-  a.click();
+  a.download='ocmg_historico.csv';a.click();
 }
 
-// ─── RESET FUNCTIONS ──────────────────────────────────────────────────────────
 function confirmZerarSorteados(){
-  openConfirm(
-    '🗑️ ZERAR ITENS SORTEADOS',
-    'Isso vai limpar todo o histórico e desbloquear todas as células do tabuleiro. Os prêmios permanecem nas mesmas posições. Deseja continuar?',
-    ()=>{
-      S.revealed={};S.history=[];S.players={};
-      saveS();renderBoard();updateStats();updateHistPanel();updateAdmPanel();
-      if(brindesOpen)renderBrindeList();
-      showToast('✅ Itens sorteados zerados com sucesso!');
-    }
-  );
+  openConfirm('🗑️ ZERAR ITENS SORTEADOS','Isso vai limpar todo o histórico e desbloquear todas as células do tabuleiro. Os prêmios permanecem nas mesmas posições. Deseja continuar?',()=>{
+    S.revealed={};S.history=[];S.players={};saveS();renderBoard();updateStats();updateHistPanel();updateAdmPanel();
+    if(brindesOpen)renderBrindeList();showToast('✅ Itens sorteados zerados com sucesso!');
+  });
 }
 
 function confirmResetBoard(){
-  openConfirm(
-    '⚠️ RESETAR TABULEIRO COMPLETO',
-    'Isso vai reembaralhar TODOS os prêmios, apagar o histórico e reiniciar o jogo do zero. Esta ação não pode ser desfeita. Confirmar?',
-    ()=>{
-      genBoard();renderBoard();updateStats();updateHistPanel();updateAdmPanel();
-      if(brindesOpen)renderBrindeList();
-      showToast('✅ Tabuleiro resetado e reembaralhado com sucesso!');
-    }
-  );
+  openConfirm('⚠️ RESETAR TABULEIRO COMPLETO','Isso vai reembaralhar TODOS os prêmios, apagar o histórico e reiniciar o jogo do zero. Esta ação não pode ser desfeita. Confirmar?',()=>{
+    genBoard();renderBoard();updateStats();updateHistPanel();updateAdmPanel();
+    if(brindesOpen)renderBrindeList();showToast('✅ Tabuleiro resetado e reembaralhado com sucesso!');
+  });
 }
 
-// ─── KEYBOARD ─────────────────────────────────────────────────────────────────
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     document.getElementById('moElig').style.display='none';
     document.getElementById('moPrize').style.display='none';
     document.getElementById('moAdmLogin').style.display='none';
-    closeConfirm();
-    closePanel('hist');
-    closePanel('adm');
+    closeConfirm();closePanel('hist');closePanel('adm');
   }
 });
 </script>
